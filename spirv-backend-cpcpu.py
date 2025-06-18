@@ -43,12 +43,15 @@ def parse_spirv(file_path):
 
 
 def emit_cpcpu_binary(instructions, output_path):
-    for instr in instructions:
-        # This is using our custom opcode for add which is 0x01 that we converted from 129 from SPIR-V's standard
-        print(f"{instr['opcode']=}")
-        print(f"{instr['dst']=}")
-        print(f"{instr['src1']=}")
-        print(f"{instr['src2']=}")
+    with open(output_path, "w") as f:
+        for instr in instructions:
+            # This is using our custom opcode for add which is 0x01 that we converted from 129 from SPIR-V's standard
+            print(f"{instr['opcode']=}")
+            print(f"{instr['dst']=}")
+            print(f"{instr['src1']=}")
+            print(f"{instr['src2']=}")
+            if instr["opcode"] == CPCPU_CUSTOM_OPCODE_FADD:
+                f.write(f"FADD dst={instr['dst']} src1={instr['src1']} src2={instr['src2']}\n")
 
 if __name__ == "__main__":
     instrs = parse_spirv("add.spv")
