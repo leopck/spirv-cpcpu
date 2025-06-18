@@ -1,3 +1,4 @@
+import argparse
 import struct
 
 CPCPU_CUSTOM_OPCODE_FADD = 0x01
@@ -19,7 +20,7 @@ def parse_spirv(file_path):
         opcode = word & 0xFFFF
 
         print(f"Instruction {i}: opcode={opcode}, word_count={word_count}")
-        
+
         if opcode == 129:  # OpFAdd
             try:
                 result_type = instructions[i + 1]
@@ -53,8 +54,20 @@ def emit_cpcpu_binary(instructions, output_path):
             if instr["opcode"] == CPCPU_CUSTOM_OPCODE_FADD:
                 f.write(f"FADD dst={instr['dst']} src1={instr['src1']} src2={instr['src2']}\n")
 
-if __name__ == "__main__":
-    instrs = parse_spirv("add.spv")
-    emit_cpcpu_binary(instrs, "add.cpcpu.bin")
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("spv")
+    parser.add_argument("bin")
+    return parser.parse_args()
+
+
+def main():
+    args = parse_args()
+    instrs = parse_spirv(args.spv)
+    emit_cpcpu_binary(instrs, args.bin)
     print("CPCPU binary generated!")
 
+
+if __name__ == "__main__":
+    main()
