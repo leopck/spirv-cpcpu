@@ -63,6 +63,26 @@ RUN python3 utils/git-sync-deps && \
     -DCMAKE_INSTALL_PREFIX=/opt/spirv && \
     ninja && ninja install
 
+# --- Install Triton-lang ---
+#RUN pip install torch==1.13.1+cpu torchvision==0.14.1+cpu torchaudio==0.13.1 \
+#  -f https://download.pytorch.org/whl/cpu/torch_stable.html
+#
+#WORKDIR /opt
+#RUN git clone https://github.com/triton-lang/triton && \
+#    cd triton && \
+#    git checkout v1.1.1 && \
+#    cd python && \
+#    pip install -e .
+RUN pip install torch
+WORKDIR /opt
+RUN git clone --recursive https://github.com/triton-lang/triton-cpu.git && \
+    cd triton-cpu && \
+    pip install -r python/requirements.txt
+
+RUN pip install numpy
+WORKDIR /opt/triton-cpu
+RUN pip install -e python 2>&1 > /dev/null; pip install -e python
+
 # --- Ready workspace ---
 WORKDIR /workspace
 CMD ["/bin/bash"]
