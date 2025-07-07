@@ -1,6 +1,7 @@
 all: disassemble
 	python3 spirv-backend-cpcpu.py add.spv add.cpcpu.bin
 	python3 spirv-backend-cpcpu.py multi_add.spv multi_add.cpcpu.bin
+	bazelisk build //backend:spirv-backend-cpcpu
 
 compile:
 	llvm-as add.ll -o add.bc

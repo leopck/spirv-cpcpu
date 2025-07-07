@@ -1,0 +1,19 @@
+bazel_dep(name = "rules_cc", version = "0.1.2")
+
+new_local_repository = use_repo_rule("@bazel_tools//tools/build_defs/repo:local.bzl", "new_local_repository")
+
+new_local_repository(
+    name = "spirv",
+    path = "/opt/spirv",
+    build_file_content = """
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+    name = "spirv-tools",
+    srcs = ["lib/libSPIRV-Tools.a"],
+    hdrs = glob(["include/spirv-tools/libspirv.h*"]),
+    strip_include_prefix = "include",
+    visibility = ["//visibility:public"],
+)
+""",
+)

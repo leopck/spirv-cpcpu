@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV PATH="/opt/spirv/bin:/opt/llvm/bin:${PATH}"
+ENV PATH="/opt/spirv/bin:/opt/llvm/bin:/opt/bazelisk:${PATH}"
 
 # --- Install base dependencies ---
 RUN apt-get update && apt-get install -y \
@@ -82,6 +82,11 @@ RUN git clone --recursive https://github.com/triton-lang/triton-cpu.git && \
 RUN pip install numpy
 WORKDIR /opt/triton-cpu
 RUN pip install -e python 2>&1 > /dev/null; pip install -e python
+
+WORKDIR /opt/bazelisk/
+RUN curl -L https://github.com/bazelbuild/bazelisk/releases/download/v1.26.0/bazelisk-linux-amd64 -o bazelisk && chmod +x bazelisk
+
+COPY . /workspace
 
 # --- Ready workspace ---
 WORKDIR /workspace
